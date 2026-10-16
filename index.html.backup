@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมหัตถ์ พิชิตสระเสียงสั้น-ยาว</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts Kanit & Mali -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .font-kid {
+      font-family: 'Mali', cursive;
+    }
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    .animate-float {
+      animation: float-slow 3s ease-in-out infinite;
+    }
+    .magic-cursor {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23f59e0b" stroke="%23ffffff" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'), auto;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-amber-100 via-sky-100 to-indigo-100 min-h-screen text-slate-800 magic-cursor overflow-x-hidden flex flex-col justify-between">
+
+  <!-- TOP HEADER / NAV -->
+  <header class="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-amber-200 px-4 py-3 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-amber-400 rounded-2xl flex items-center justify-center text-2xl shadow-md transform -rotate-3">
+          ✋✨
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold font-kid text-amber-900 tracking-wide flex items-center gap-2">
+            หัตถ์ พิชิตสระ
+            <span class="text-xs font-sans font-medium px-2 py-0.5 bg-amber-200 text-amber-800 rounded-full">ชั้น ป.1</span>
+          </h1>
+          <p class="text-xs text-slate-500">นวัตกรรมเกมฝึกทักษะการใช้เมาส์ & สระเสียงสั้น-ยาว</p>
+        </div>
+      </div>
+
+      <!-- Current User Badge & Control buttons -->
+      <div class="flex items-center gap-2">
+        <div id="currentUserBadge" class="hidden items-center gap-2 bg-amber-50 border border-amber-300 px-3 py-1.5 rounded-full shadow-inner">
+          <span id="userAvatarIcon" class="text-xl">🦁</span>
+          <div class="text-left leading-tight pr-2">
+            <span id="userNameDisplay" class="text-sm font-bold text-amber-950 block">ด.ช. ภูผา</span>
+            <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block"></span> เช็คชื่อแล้ว ⭐
+            </span>
+          </div>
+          <button onclick="logoutStudent()" title="สลับผู้เล่น" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-2 py-1 rounded-full transition">
+            ออก
+          </button>
+        </div>
+
+        <!-- Teacher Dashboard Toggle Button -->
+        <button onclick="openTeacherModal()" class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl shadow-sm transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          <span class="hidden sm:inline">ข้อมูลสำหรับครู</span>
+          <span class="sm:hidden">ครู</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER WITH DYNAMIC SCREENS -->
+  <main class="max-w-5xl mx-auto w-full p-4 flex-1 flex flex-col justify-center items-center">
+
+    <!-- ==================== SCREEN 1: LOGIN & ATTENDANCE ==================== -->
+    <section id="loginScreen" class="w-full max-w-4xl text-center py-4">
+      <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-amber-200">
+        <div class="mb-6">
+          <span class="inline-block px-4 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold mb-2">
+            🎒 ระบบเช็คชื่อเข้าชั้นเรียนภาษาไทย
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold font-kid text-slate-800">
+            นักเรียนคนเก่ง คลิกเลือกรูปของตัวเองเลยจ้า! 👇
+          </h2>
+          <p class="text-slate-500 text-sm mt-1">ใช้เมาส์เลื่อนมาชี้แล้วคลิกซ้าย 1 ครั้งเพื่อเช็คชื่อ</p>
+        </div>
+
+        <!-- Student Cards Grid -->
+        <div id="studentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 max-h-[50vh] overflow-y-auto p-2">
+          <!-- Dynamically filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 2: LEARNING CONTENT (หน้าเนื้อหาเรียนรู้ - บังคับเข้าก่อน) ==================== -->
+    <section id="learningScreen" class="w-full max-w-4xl hidden py-2">
+      <!-- Top Navigation Bar -->
+      <div class="flex items-center justify-between bg-white/90 px-5 py-3 rounded-2xl shadow-md border border-slate-200 mb-4">
+        <span class="font-bold text-amber-900 font-kid text-lg">📚 บทเรียนสระภาษาไทย ป.1</span>
+        <button onclick="speakThai('สระเสียงสั้น คือ สระที่ออกเสียงสั้น ใช้เวลาออกเสียงน้อย ส่วน สระเสียงยาว คือ สระที่ลากเสียงให้อย่างต่อเนื่องยาวนานขึ้น')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-xl font-medium">
+          🔊 ฟังคำอธิบาย
+        </button>
+      </div>
+
+      <!-- Content Container -->
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-amber-200 max-h-[75vh] overflow-y-auto">
+        
+        <!-- Header Banner -->
+        <div class="text-center mb-6">
+          <h2 class="text-2xl sm:text-3xl font-black font-kid text-slate-800">
+            มาทำความรู้จัก "สระเสียงสั้น" และ "สระเสียงยาว" กันเถอะ! 💡
+          </h2>
+          <p class="text-slate-500 text-sm mt-1">คลิกที่การ์ดสระแต่ละตัวเพื่อฟังเสียงอ่านออกเสียงภาษาไทยนะจ๊ะ</p>
+        </div>
+
+        <!-- Two Columns: Short vs Long Vowels -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Column 1: Short Vowels -->
+          <div class="bg-rose-50/90 rounded-3xl p-5 border-3 border-rose-300 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-3 border-b border-rose-200 pb-3">
+                <div>
+                  <h3 class="text-xl font-bold font-kid text-rose-800">สระเสียงสั้น</h3>
+                  <p class="text-base sm:text-lg text-rose-700 font-medium leading-relaxed mt-1">
+                    <b>สระเสียงสั้น</b> คือ สระที่ออกเสียงสั้น ใช้เวลาออกเสียงน้อย เช่น อะ, อิ, อึ, อุ, เอะ, แอะ, โอะ, เอาะ, เออะ ⚡
+                  </p>
+                </div>
+              </div>
+
+              <div class="bg-white/80 p-3 rounded-2xl mb-4 text-xs text-rose-900">
+                👉 <b>เทคนิคใช้เมาส์เวลาเล่นเกม:</b> <b>"คลิกเมาส์แล้วปล่อยทันที"</b>
+              </div>
+
+              <!-- Interactive Vowel Cards -->
+              <p class="text-xs font-bold text-slate-600 mb-2">ทดลองฟังเสียงสระเสียงสั้น 👇</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="speakThai('สระ อะ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">-ะ</span>
+                    <span class="text-[11px] text-slate-500">สระ อะ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อิ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">-ิ</span>
+                    <span class="text-[11px] text-slate-500">สระ อิ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อึ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">-ึ</span>
+                    <span class="text-[11px] text-slate-500">สระ อึ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อุ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">-ุ</span>
+                    <span class="text-[11px] text-slate-500">สระ อุ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ เอะ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">เ-ะ</span>
+                    <span class="text-[11px] text-slate-500">สระ เอะ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ โอะ')" class="bg-white hover:bg-rose-100 p-2.5 rounded-xl border border-rose-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-rose-700 block">โ-ะ</span>
+                    <span class="text-[11px] text-slate-500">สระ โอะ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Long Vowels -->
+          <div class="bg-emerald-50/90 rounded-3xl p-5 border-3 border-emerald-300 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-3 border-b border-emerald-200 pb-3">
+                <div>
+                  <h3 class="text-xl font-bold font-kid text-emerald-800">สระเสียงยาว</h3>
+                  <p class="text-base sm:text-lg text-emerald-700 font-medium leading-relaxed mt-1">
+                    <b>สระเสียงยาว</b> คือ สระที่ลากเสียงให้อย่างต่อเนื่องยาวนานขึ้น เช่น อา, อี, อือ, อู, เอ, แอ, โอ, ออ, เออ 🌈
+                  </p>
+                </div>
+              </div>
+
+              <div class="bg-white/80 p-3 rounded-2xl mb-4 text-xs text-emerald-900">
+                👉 <b>เทคนิคใช้เมาส์เวลาเล่นเกม:</b> <b>"กดเมาส์ค้างไว้ตามจังหวะเสียง"</b>
+              </div>
+
+              <!-- Interactive Vowel Cards -->
+              <p class="text-xs font-bold text-slate-600 mb-2">ทดลองฟังเสียงสระเสียงยาว 👇</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="speakThai('สระ อา')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">-า</span>
+                    <span class="text-[11px] text-slate-500">สระ อา</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อี')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">-ี</span>
+                    <span class="text-[11px] text-slate-500">สระ อี</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อือ')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">-ื</span>
+                    <span class="text-[11px] text-slate-500">สระ อือ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ อู')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">-ู</span>
+                    <span class="text-[11px] text-slate-500">สระ อู</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ เอ')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">เ-</span>
+                    <span class="text-[11px] text-slate-500">สระ เอ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+                <button onclick="speakThai('สระ โอ')" class="bg-white hover:bg-emerald-100 p-2.5 rounded-xl border border-emerald-200 shadow-sm transition text-left flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold font-kid text-emerald-700 block">โ-</span>
+                    <span class="text-[11px] text-slate-500">สระ โอ</span>
+                  </div>
+                  <span class="text-xs">🔊</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Button To Start Game Hub -->
+        <div class="mt-8 text-center border-t border-amber-200 pt-6">
+          <p class="text-slate-600 font-semibold mb-3">เรียนรู้เนื้อหาเสร็จเรียบร้อยแล้วใช่ไหมจ๊ะ? ไปหน้าเลือกเกมกันเลย!</p>
+          <button onclick="showScreen('hubScreen')" class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xl py-4 px-10 rounded-2xl shadow-xl transition transform hover:scale-105 inline-flex items-center gap-3">
+            <span>เรียนเสร็จเรียบร้อย ไปเลือกด่านเกมกัน!</span>
+            <span>🎮</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 3: GAME HUB / MENU (หน้าเลือกเกม) ==================== -->
+    <section id="hubScreen" class="w-full max-w-4xl hidden py-4">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 bg-white/90 px-5 py-2 rounded-full shadow-sm border border-amber-200 mb-3">
+          <span class="text-2xl" id="hubStudentEmoji">🦁</span>
+          <span class="font-bold text-lg text-amber-900" id="hubStudentName">ด.ช. ภูผา สดใส</span>
+          <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold">เลขที่ <span id="hubStudentNum">1</span></span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black font-kid text-slate-800 drop-shadow-sm">
+          เลือกด่านเกมเพื่อพิชิตสระ 🎮
+        </h2>
+        <p class="text-slate-600 mt-1">ใช้ความรู้ที่เรียนมา ฝึกมือ ฝึกสายตา กันเถอะ!</p>
+      </div>
+
+      <!-- REVIEW BANNER -->
+      <div class="bg-gradient-to-r from-indigo-400 to-purple-500 rounded-3xl p-5 text-white shadow-xl mb-6 border-4 border-white transform transition hover:scale-[1.01] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4 text-center sm:text-left">
+          <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shadow-inner shrink-0">
+            🧠
+          </div>
+          <div>
+            <h3 class="text-xl sm:text-2xl font-black font-kid">ลืมเนื้อหาหรือเปล่าจ๊ะ?</h3>
+            <p class="text-indigo-100 text-sm mt-1">สามารถกดย้อนกลับไปฟังเสียงสระและอ่านทบทวนได้ตลอดเวลานะ</p>
+          </div>
+        </div>
+        <button onclick="showScreen('learningScreen')" class="bg-white hover:bg-indigo-50 text-indigo-900 font-bold px-6 py-3 rounded-2xl shadow-lg transition text-base shrink-0 flex items-center gap-2">
+          <span>กลับไปทบทวนเนื้อหา</span>
+          <span>📖</span>
+        </button>
+      </div>
+
+      <!-- Game Mode Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Mode 1: Drag & Drop Sorting -->
+        <div class="bg-gradient-to-b from-white to-amber-50 rounded-3xl p-6 border-4 border-amber-300 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 bg-amber-400 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-md mb-3">
+              🧺🎈
+            </div>
+            <div class="inline-block bg-amber-200 text-amber-900 text-xs font-bold px-3 py-1 rounded-full mb-2">
+              ด่านที่ 1: ฝึกการลากวาง (Drag & Drop)
+            </div>
+            <h3 class="text-2xl font-bold font-kid text-slate-800 mb-1">ตะกร้าแยกสระ</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">
+              ลากฟองอากาศสระไปหย่อนลงใน "ตะกร้าเสียงสั้น" หรือ "ตะกร้าเสียงยาว" ให้ถูกต้อง
+            </p>
+          </div>
+          <button onclick="startGameMode1()" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+            <span>เริ่มเล่นด่านที่ 1</span>
+            <span>🚀</span>
+          </button>
+        </div>
+
+        <!-- Mode 2: Mouse Hold Duration -->
+        <div class="bg-gradient-to-b from-white to-sky-50 rounded-3xl p-6 border-4 border-sky-300 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 bg-sky-400 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-md mb-3">
+              🐉⏱️
+            </div>
+            <div class="inline-block bg-sky-200 text-sky-900 text-xs font-bold px-3 py-1 rounded-full mb-2">
+              ด่านที่ 2: ฝึกการคลิกสั้น-กดยาว
+            </div>
+            <h3 class="text-2xl font-bold font-kid text-slate-800 mb-1">ป้อนอาหารมังกรน้อย</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">
+              สระเสียงสั้นให้ "คลิกปล่อยทันที" สระเสียงยาวต้อง "กดเมาส์ค้างไว้" จนพลังเต็ม!
+            </p>
+          </div>
+          <button onclick="startGameMode2()" class="w-full bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold py-3 px-5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+            <span>เริ่มเล่นด่านที่ 2</span>
+            <span>✨</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: GAMEPLAY MODE 1 (DRAG & DROP) ==================== -->
+    <section id="game1Screen" class="w-full max-w-4xl hidden py-2">
+      <div class="flex items-center justify-between bg-white/90 px-5 py-3 rounded-2xl shadow-md border border-slate-200 mb-4">
+        <button onclick="returnToHub()" class="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+          ⬅️ กลับหน้าเลือกเกม
+        </button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">ข้อที่</span>
+            <span id="g1Progress" class="text-lg font-bold text-slate-700 font-kid">1 / 10</span>
+          </div>
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">คะแนน</span>
+            <span id="g1Score" class="text-xl font-black text-amber-600 font-kid">0 ⭐</span>
+          </div>
+        </div>
+        <button onclick="speakCurrentVowel()" title="ฟังเสียงสระอีกรอบ" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
+          🔊 ฟังเสียง
+        </button>
+      </div>
+
+      <div class="relative bg-gradient-to-b from-sky-200 via-indigo-100 to-emerald-100 rounded-3xl p-6 border-4 border-white shadow-2xl min-h-[440px] flex flex-col justify-between items-center overflow-hidden">
+        
+        <div class="bg-white/80 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm text-center">
+          <p class="text-slate-700 font-semibold text-base sm:text-lg">
+            👇 ลากฟองอากาศสระ ไปใส่ในตะกร้าที่ถูกต้อง
+          </p>
+        </div>
+
+        <!-- Draggable Bubble Area -->
+        <div class="my-auto flex flex-col items-center justify-center relative py-6">
+          <div id="vowelBubble" draggable="true" class="w-36 h-36 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-amber-300 via-yellow-200 to-white shadow-2xl border-4 border-yellow-400 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing transition-transform animate-float">
+            <span id="vowelDisplay" class="text-5xl sm:text-6xl font-bold font-kid text-amber-950 tracking-wider">-ะ</span>
+            <span id="vowelSoundText" class="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full mt-1">สระ อะ</span>
+          </div>
+          <span class="text-xs text-slate-500 mt-2 font-medium">👈 คลิกค้างแล้วลาก 👉</span>
+        </div>
+
+        <!-- Drop Targets -->
+        <div class="w-full grid grid-cols-2 gap-4 sm:gap-8 pt-2">
+          <!-- Short Vowel Basket -->
+          <div id="basketShort" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event, 'short')" class="bg-rose-50/90 border-4 border-dashed border-rose-400 hover:bg-rose-100 hover:border-rose-500 rounded-3xl p-4 sm:p-5 text-center transition flex flex-col items-center justify-center min-h-[140px]">
+            <div class="text-5xl sm:text-6xl mb-1 drop-shadow-md">🧺</div>
+            <h4 class="text-lg sm:text-xl font-bold font-kid text-rose-700">สระเสียงสั้น</h4>
+            <p class="text-[11px] sm:text-xs text-rose-500 font-medium">เช่น -ะ, -ิ, -ุ</p>
+          </div>
+
+          <!-- Long Vowel Basket -->
+          <div id="basketLong" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event, 'long')" class="bg-emerald-50/90 border-4 border-dashed border-emerald-400 hover:bg-emerald-100 hover:border-emerald-500 rounded-3xl p-4 sm:p-5 text-center transition flex flex-col items-center justify-center min-h-[140px]">
+            <div class="text-5xl sm:text-6xl mb-1 drop-shadow-md">🧺</div>
+            <h4 class="text-lg sm:text-xl font-bold font-kid text-emerald-700">สระเสียงยาว</h4>
+            <p class="text-[11px] sm:text-xs text-emerald-500 font-medium">เช่น -า, -ี, -ู</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 5: GAMEPLAY MODE 2 (CLICK & HOLD) ==================== -->
+    <section id="game2Screen" class="w-full max-w-4xl hidden py-2">
+      <div class="flex items-center justify-between bg-white/90 px-5 py-3 rounded-2xl shadow-md border border-slate-200 mb-4">
+        <button onclick="returnToHub()" class="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+          ⬅️ กลับหน้าเลือกเกม
+        </button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">ข้อที่</span>
+            <span id="g2Progress" class="text-lg font-bold text-slate-700 font-kid">1 / 10</span>
+          </div>
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">คะแนน</span>
+            <span id="g2Score" class="text-xl font-black text-sky-600 font-kid">0 ⭐</span>
+          </div>
+        </div>
+        <button onclick="speakCurrentVowelMode2()" title="ฟังเสียงสระ" class="bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
+          🔊 ฟังเสียง
+        </button>
+      </div>
+
+      <div class="relative bg-gradient-to-b from-sky-100 via-teal-50 to-emerald-100 rounded-3xl p-6 border-4 border-white shadow-2xl min-h-[460px] flex flex-col justify-between items-center text-center">
+        
+        <div class="bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-2xl shadow-sm max-w-md w-full">
+          <span class="text-xs font-bold text-slate-400 block">โจทย์สระคือ:</span>
+          <div class="flex items-center justify-center gap-3 mt-1">
+            <span id="m2VowelText" class="text-4xl sm:text-5xl font-bold font-kid text-slate-800">-า</span>
+            <span id="m2SoundBadge" class="bg-sky-100 text-sky-800 font-semibold text-sm px-3 py-1 rounded-full">สระ อา</span>
+          </div>
+          <p id="m2HintText" class="text-xs sm:text-sm text-indigo-600 font-medium mt-1">
+            (เป็นสระเสียงยาว ให้กดเมาส์ค้างไว้จนหลอดเต็ม!)
+          </p>
+        </div>
+
+        <div class="my-4 flex flex-col items-center">
+          <div id="dragonMascot" class="text-7xl sm:text-8xl mb-2 transition-transform duration-200">🐉</div>
+          <div class="w-64 bg-slate-200 rounded-full h-5 p-0.5 shadow-inner mb-3 overflow-hidden border border-slate-300">
+            <div id="holdProgressBar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-full rounded-full transition-all duration-75 w-0"></div>
+          </div>
+          <button id="feedButton" 
+                  onmousedown="handleM2ButtonDown()" 
+                  onmouseup="handleM2ButtonUp()" 
+                  onmouseleave="handleM2ButtonUp()" 
+                  ontouchstart="handleM2ButtonDown()" 
+                  ontouchend="handleM2ButtonUp()"
+                  class="bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 active:scale-95 text-white font-black text-xl sm:text-2xl px-10 py-5 rounded-3xl shadow-xl border-4 border-white transition flex items-center gap-3">
+            <span>ป้อนอาหาร</span>
+            <span>🍖</span>
+          </button>
+          <span class="text-xs text-slate-500 mt-2 font-medium">กดเมาส์สั้นหรือค้างตามความยาวของเสียงสระ</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-left w-full max-w-md text-[11px] sm:text-xs text-slate-600 bg-white/60 p-2.5 rounded-xl">
+          <div>⚡ <b>สระเสียงสั้น:</b> คลิกแล้วปล่อยทันที</div>
+          <div>⏳ <b>สระเสียงยาว:</b> กดคลิกค้างไว้ 1.5 วินาที</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="w-full text-center py-2 text-xs text-slate-500">
+    โครงงานวิจัยการพัฒนาผลสัมฤทธิ์ภาษาไทย เรื่อง สระเสียงสั้น-ยาว โดยเน้นทักษะการควบคุมร่างกาย (การใช้เมาส์) ป.1
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+  <div id="attendanceModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border-4 border-amber-300 transform transition-all scale-100">
+      <div id="modalMascot" class="text-6xl mb-2 animate-bounce">🦁</div>
+      <h3 class="text-2xl font-bold font-kid text-slate-800" id="modalStudentName">ด.ช. ภูผา</h3>
+      <p class="text-slate-500 text-sm mb-6">เลขที่ <span id="modalStudentNum">1</span> ยินดีต้อนรับเข้าชั้นเรียนจ้า!</p>
+      <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 mb-6 text-center">
+        <p class="text-xs font-semibold text-amber-800 mb-1">กิจกรรมเช็คชื่อประจำวัน</p>
+        <p class="text-sm text-slate-700">คลิกที่ปุ่มดาวด้านล่างเพื่อประทับตราเข้าเรียน</p>
+      </div>
+      <button onclick="confirmAttendance()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg text-lg flex items-center justify-center gap-2">
+        <span>ประทับตราเข้าเรียน</span>
+        <span>⭐</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="victoryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-4 border-yellow-300">
+      <div class="text-6xl mb-2">🏆🎉</div>
+      <h3 class="text-3xl font-black font-kid text-amber-900">เก่งมากเลยจ้า!</h3>
+      <p class="text-slate-600 text-sm mt-1">หนูทำภารกิจพิชิตสระสำเร็จแล้ว</p>
+      <div class="my-6 bg-gradient-to-r from-amber-50 to-yellow-50 p-4 rounded-2xl border border-amber-200">
+        <span class="text-xs text-slate-500 block">คะแนนที่ได้</span>
+        <span id="finalScoreDisplay" class="text-4xl font-black text-amber-600 font-kid">10 / 10 ⭐</span>
+        <div class="mt-2 text-xs text-emerald-600 font-semibold" id="finalAccuracyDisplay">ความแม่นยำ 100%</div>
+      </div>
+      <button onclick="returnToHubFromModal()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg text-lg">
+        ไปหน้าเลือกเกม 🚀
+      </button>
+    </div>
+  </div>
+
+  <div id="teacherModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-4xl w-full shadow-2xl border-2 border-indigo-200 flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div>
+          <h3 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
+            📊 แดชบอร์ดข้อมูลงานวิจัย & บันทึกการเข้าเรียน
+          </h3>
+          <p class="text-xs text-slate-500">รายงานข้อมูลชั้น ป.1 สำหรับนำไปใช้ประเมินประสิทธิภาพ E1 และบทที่ 4</p>
+        </div>
+        <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">✕</button>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div class="bg-indigo-50 p-3 rounded-2xl border border-indigo-100">
+          <span class="text-[11px] text-indigo-600 font-medium block">นักเรียนทั้งหมด</span>
+          <span class="text-2xl font-bold text-indigo-950">12 คน</span>
+        </div>
+        <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100">
+          <span class="text-[11px] text-emerald-600 font-medium block">เช็คชื่อแล้ววันนี้</span>
+          <span id="statAttendanceCount" class="text-2xl font-bold text-emerald-700">0 คน</span>
+        </div>
+        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100">
+          <span class="text-[11px] text-amber-700 font-medium block">คะแนนเฉลี่ยระหว่างเรียน (E1)</span>
+          <span id="statE1Avg" class="text-2xl font-bold text-amber-800">85.0%</span>
+        </div>
+        <div class="bg-sky-50 p-3 rounded-2xl border border-sky-100">
+          <span class="text-[11px] text-sky-600 font-medium block">ความแม่นยำการลากเมาส์</span>
+          <span id="statMouseAccuracy" class="text-2xl font-bold text-sky-700">92%</span>
+        </div>
+      </div>
+      <div class="overflow-y-auto flex-1 border border-slate-200 rounded-2xl">
+        <table class="w-full text-left text-xs text-slate-600">
+          <thead class="bg-slate-100 text-slate-700 font-semibold sticky top-0">
+            <tr>
+              <th class="p-2.5">เลขที่</th>
+              <th class="p-2.5">ชื่อ-สกุล</th>
+              <th class="p-2.5">สถานะเข้าเรียน</th>
+              <th class="p-2.5">เวลาที่เช็คชื่อ</th>
+              <th class="p-2.5">คะแนนด่าน 1</th>
+              <th class="p-2.5">คะแนนด่าน 2</th>
+              <th class="p-2.5">คลิกพลาด</th>
+            </tr>
+          </thead>
+          <tbody id="teacherTableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between pt-4 border-t mt-4 text-xs">
+        <button onclick="resetDataForResearch()" class="text-rose-600 hover:text-rose-800 font-medium">🔄 ล้างข้อมูลทดสอบทั้งหมด</button>
+        <button onclick="closeTeacherModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="researchModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-4 border-emerald-300">
+      <div class="text-5xl mb-2">📊</div>
+      <h3 class="text-2xl font-bold font-kid text-emerald-900">ข้อมูลสำหรับวิจัย</h3>
+      <p class="text-slate-600 text-sm mt-2 leading-relaxed">ข้อมูลการเช็คชื่อ คะแนน และการคลิกของนักเรียนจะถูกส่งไปเก็บใน Google Sheets แยกจากแดชบอร์ดครู</p>
+      <p id="researchConnectionStatus" class="mt-4 px-3 py-2 rounded-xl bg-amber-50 text-amber-800 text-sm font-semibold">ยังไม่ได้ตั้งค่า Google Sheets</p>
+      <button onclick="closeResearchModal()" class="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold">ปิดหน้าต่าง</button>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2">
+    <span id="toastIcon">💡</span>
+    <span id="toastMessage">แจ้งเตือนข้อความ</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    const STUDENTS = [
+      { id: 1, name: "ด.ช. ภูผา สดใส", num: 1, avatar: "🦁", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 2, name: "ด.ช. ก้องภพ ตั้งใจ", num: 2, avatar: "🐻", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 3, name: "ด.ญ. ใบบัว น่ารัก", num: 3, avatar: "🐰", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 4, name: "ด.ญ. มะนาว ยิ้มสวย", num: 4, avatar: "🐱", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 5, name: "ด.ช. วิน รวดเร็ว", num: 5, avatar: "🦊", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 6, name: "ด.ญ. ข้าวหอม ใจดี", num: 6, avatar: "🐼", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 7, name: "ด.ช. ต้นกล้า รักเรียน", num: 7, avatar: "🐸", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 8, name: "ด.ญ. ฟ้าใส เบิกบาน", num: 8, avatar: "🐥", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 9, name: "ด.ช. ปันปัน ช่างคิด", num: 9, avatar: "🐶", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 10, name: "ด.ญ. มีอา เบิกบาน", num: 10, avatar: "🐨", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 11, name: "ด.ช. อาร์ม กล้าหาญ", num: 11, avatar: "🐯", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 12, name: "ด.ญ. พลอย สดชื่น", num: 12, avatar: "🦄", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 13, name: "ด.ช. ธันวา มุ่งมั่น", num: 13, avatar: "🐼", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 14, name: "ด.ญ. แก้มใส ร่าเริง", num: 14, avatar: "🐨", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 15, name: "ด.ช. นที ช่างฝัน", num: 15, avatar: "🐬", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 16, name: "ด.ญ. น้ำหวาน ใจดี", num: 16, avatar: "🦋", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 17, name: "ด.ช. ภูมิพัฒน์ ขยันเรียน", num: 17, avatar: "🐘", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 18, name: "ด.ญ. พิมพ์ชนก ยิ้มหวาน", num: 18, avatar: "🐿️", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 19, name: "ด.ช. ภาคิน รักเพื่อน", num: 19, avatar: "🦊", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 20, name: "ด.ญ. ใบเตย สดใส", num: 20, avatar: "🐝", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 21, name: "ด.ช. รวิภาส ตั้งใจ", num: 21, avatar: "🦁", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 22, name: "ด.ญ. ขิมนภา อ่อนโยน", num: 22, avatar: "🐰", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 23, name: "ด.ช. ปรเมศวร์ กล้าคิด", num: 23, avatar: "🐺", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 24, name: "ด.ญ. ชมพูนุช น่ารัก", num: 24, avatar: "🐹", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 25, name: "ด.ช. กวิน รวดเร็ว", num: 25, avatar: "🐢", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 26, name: "ด.ญ. อัญชัน เบิกบาน", num: 26, avatar: "🦄", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 27, name: "ด.ช. ศุภกร มีน้ำใจ", num: 27, avatar: "🐲", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 28, name: "ด.ญ. มินตรา ช่างสังเกต", num: 28, avatar: "🐱", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 29, name: "ด.ช. เจษฎา สนุกสนาน", num: 29, avatar: "🐵", attended: false, time: "-", score1: "-", score2: "-", miss: 0 },
+      { id: 30, name: "ด.ญ. ลลิตา รักการอ่าน", num: 30, avatar: "🐧", attended: false, time: "-", score1: "-", score2: "-", miss: 0 }
+    ];
+
+    const VOWELS_POOL = [
+      { char: "-ะ", name: "สระ อะ", type: "short", speech: "สระ อะ สระเสียงสั้น" },
+      { char: "-า", name: "สระ อา", type: "long", speech: "สระ อา สระเสียงยาว" },
+      { char: "-ิ", name: "สระ อิ", type: "short", speech: "สระ อิ สระเสียงสั้น" },
+      { char: "-ี", name: "สระ อี", type: "long", speech: "สระ อี สระเสียงยาว" },
+      { char: "-ึ", name: "สระ อึ", type: "short", speech: "สระ อึ สระเสียงสั้น" },
+      { char: "-ื", name: "สระ อือ", type: "long", speech: "สระ อือ สระเสียงยาว" },
+      { char: "-ุ", name: "สระ อุ", type: "short", speech: "สระ อุ สระเสียงสั้น" },
+      { char: "-ู", name: "สระ อู", type: "long", speech: "สระ อู สระเสียงยาว" },
+      { char: "เ-ะ", name: "สระ เอะ", type: "short", speech: "สระ เอะ สระเสียงสั้น" },
+      { char: "เ-", name: "สระ เอ", type: "long", speech: "สระ เอ สระเสียงยาว" },
+      { char: "แ-ะ", name: "สระ แอะ", type: "short", speech: "สระ แอะ สระเสียงสั้น" },
+      { char: "แ-", name: "สระ แอ", type: "long", speech: "สระ แอ สระเสียงยาว" },
+      { char: "โ-ะ", name: "สระ โอะ", type: "short", speech: "สระ โอะ สระเสียงสั้น" },
+      { char: "โ-", name: "สระ โอ", type: "long", speech: "สระ โอ สระเสียงยาว" }
+    ];
+
+    let currentStudent = null, selectedStudentForLogin = null;
+    // ใส่ URL ของ Web app จาก Google Apps Script หลัง Deploy แล้ว
+    const RESEARCH_SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyVSQFXCPTn1PsHVnz6f36ugGphZhwKS0VQnIZJuT_P0vaNrZ8PCD5Ho1VV-3XI3l1d_Q/exec';
+    const researchSessionId = `session-${Date.now()}`;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function sendResearchData(eventType, data = {}) {
+      if (!RESEARCH_SHEET_WEB_APP_URL) return;
+      const payload = {
+        sessionId: researchSessionId,
+        eventType,
+        recordedAt: new Date().toISOString(),
+        studentId: currentStudent?.id || selectedStudentForLogin?.id || '',
+        studentNumber: currentStudent?.num || selectedStudentForLogin?.num || '',
+        studentName: currentStudent?.name || selectedStudentForLogin?.name || '',
+        ...data
+      };
+      fetch(RESEARCH_SHEET_WEB_APP_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload), keepalive: true
+      }).catch(() => {});
+    }
+
+    function playTone(freq, duration = 0.15, type = 'sine') {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 0.1); setTimeout(() => playTone(659.25, 0.1), 100);
+      setTimeout(() => playTone(783.99, 0.15), 200); setTimeout(() => playTone(1046.50, 0.25), 300);
+    }
+    function playErrorSound() { playTone(220, 0.2, 'sawtooth'); setTimeout(() => playTone(164.81, 0.3, 'sawtooth'), 150); }
+    function playStampSound() { playTone(330, 0.08, 'triangle'); setTimeout(() => playTone(880, 0.2, 'sine'), 80); }
+
+    function speakThai(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'th-TH'; utterance.rate = 0.7; utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showToast(msg, icon = '💡') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg; document.getElementById('toastIcon').innerText = icon;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none'), 2500);
+    }
+
+    function renderStudentGrid() {
+      const grid = document.getElementById('studentGrid'); grid.innerHTML = '';
+      STUDENTS.forEach(stu => {
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl border-2 cursor-pointer transition transform hover:scale-105 active:scale-95 flex flex-col items-center text-center shadow-sm ${stu.attended ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 hover:bg-amber-50 border-slate-200 hover:border-amber-400'}`;
+        card.onclick = () => selectStudentForLogin(stu);
+        card.innerHTML = `<div class="relative"><span class="text-4xl sm:text-5xl block mb-1">${stu.avatar}</span>${stu.attended ? '<span class="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 text-[10px]">✓</span>' : ''}</div><span class="inline-block bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full mt-1">เลขที่ ${stu.num}</span><span class="text-base sm:text-lg font-bold text-slate-800 mt-1 truncate w-full">${stu.name}</span><span class="text-[10px] ${stu.attended ? 'text-emerald-600 font-bold' : 'text-slate-400'} mt-0.5">${stu.attended ? '⭐ เช็คชื่อแล้ว' : 'ยังไม่เช็คชื่อ'}</span>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function selectStudentForLogin(student) {
+      selectedStudentForLogin = student;
+      document.getElementById('modalMascot').innerText = student.avatar;
+      document.getElementById('modalStudentName').innerText = student.name;
+      document.getElementById('modalStudentNum').innerText = student.num;
+      document.getElementById('attendanceModal').classList.remove('hidden');
+      playTone(440, 0.1);
+    }
+
+    function confirmAttendance() {
+      if (!selectedStudentForLogin) return;
+      const now = new Date();
+      selectedStudentForLogin.attended = true;
+      selectedStudentForLogin.time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      currentStudent = selectedStudentForLogin;
+      playStampSound(); showToast(`เช็คชื่อ ${currentStudent.name} สำเร็จ!`, '⭐');
+      sendResearchData('attendance', { attendanceTime: currentStudent.time });
+      document.getElementById('attendanceModal').classList.add('hidden');
+      updateUserBadge(); renderStudentGrid(); updateTeacherStats();
+      
+      // บังคับเปลี่ยนไปหน้าเนื้อหาการเรียนรู้ทันทีที่เช็คชื่อเสร็จ
+      setTimeout(() => {
+        showScreen('learningScreen');
+        speakThai(`สวัสดีจ้า ${currentStudent.name} มาทำความรู้จักสระเสียงสั้นและสระเสียงยาวกันก่อนนะ`);
+      }, 500);
+    }
+
+    function updateUserBadge() {
+      const badge = document.getElementById('currentUserBadge');
+      if (currentStudent) {
+        badge.classList.remove('hidden'); badge.classList.add('flex');
+        document.getElementById('userAvatarIcon').innerText = currentStudent.avatar;
+        document.getElementById('userNameDisplay').innerText = currentStudent.name;
+        document.getElementById('hubStudentEmoji').innerText = currentStudent.avatar;
+        document.getElementById('hubStudentName').innerText = currentStudent.name;
+        document.getElementById('hubStudentNum').innerText = currentStudent.num;
+      } else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+    }
+
+    function logoutStudent() {
+      currentStudent = null; updateUserBadge(); showScreen('loginScreen'); showToast("ออกจากระบบเรียบร้อย", "👋");
+    }
+
+    function showScreen(screenId) {
+      ['loginScreen', 'hubScreen', 'learningScreen', 'game1Screen', 'game2Screen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function returnToHub() { showScreen('hubScreen'); }
+    function returnToHubFromModal() { document.getElementById('victoryModal').classList.add('hidden'); showScreen('hubScreen'); }
+
+    /* --- GAME 1 --- */
+    let g1Index = 0, g1Score = 0, g1Questions = [], currentG1Item = null;
+    function startGameMode1() {
+      g1Index = 0; g1Score = 0; g1Questions = [...VOWELS_POOL].sort(() => 0.5 - Math.random()).slice(0, 10);
+      showScreen('game1Screen'); loadG1Question();
+    }
+    function loadG1Question() {
+      if (g1Index >= g1Questions.length) { endGameMode1(); return; }
+      currentG1Item = g1Questions[g1Index];
+      document.getElementById('g1Progress').innerText = `${g1Index + 1} / ${g1Questions.length}`;
+      document.getElementById('g1Score').innerText = `${g1Score} ⭐`;
+      document.getElementById('vowelDisplay').innerText = currentG1Item.char;
+      document.getElementById('vowelSoundText').innerText = currentG1Item.name;
+      const bubble = document.getElementById('vowelBubble');
+      bubble.classList.remove('opacity-0'); bubble.style.transform = '';
+      speakThai(currentG1Item.name);
+    }
+    function speakCurrentVowel() { if (currentG1Item) speakThai(currentG1Item.speech); }
+
+    const vowelBubble = document.getElementById('vowelBubble');
+    vowelBubble.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', currentG1Item.type); playTone(500, 0.05);
+      setTimeout(() => vowelBubble.classList.add('opacity-0'), 10);
+    });
+    vowelBubble.addEventListener('dragend', () => vowelBubble.classList.remove('opacity-0'));
+
+    function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('scale-105', 'bg-amber-100'); }
+    function dragLeave(e) { e.currentTarget.classList.remove('scale-105', 'bg-amber-100'); }
+    function handleDrop(e, targetType) {
+      e.preventDefault(); e.currentTarget.classList.remove('scale-105', 'bg-amber-100');
+      if (!currentG1Item) return;
+      if (currentG1Item.type === targetType) {
+        playSuccessSound(); g1Score++; showToast("ถูกต้องแล้วจ้า! เก่งมาก ✨", "🎉"); speakThai("ถูกต้องจ้า");
+      } else {
+        playErrorSound(); if (currentStudent) currentStudent.miss++; showToast(`ยังไม่ถูกต้องนะ นี่คือ ${currentG1Item.name}`, "❌"); speakThai("ลองดูอีกทีนะ");
+      }
+      g1Index++; setTimeout(loadG1Question, 900);
+    }
+    function endGameMode1() {
+      if (currentStudent) currentStudent.score1 = `${g1Score}/${g1Questions.length}`;
+      sendResearchData('game_completed', { game: 'mode1', score: g1Score, totalQuestions: g1Questions.length, mistakes: currentStudent?.miss || 0 });
+      updateTeacherStats();
+      document.getElementById('finalScoreDisplay').innerText = `${g1Score} / ${g1Questions.length} ⭐`;
+      document.getElementById('finalAccuracyDisplay').innerText = `ความแม่นยำ ${Math.round((g1Score / g1Questions.length) * 100)}% | เหมาะกับการเก็บคะแนน E1`;
+      document.getElementById('victoryModal').classList.remove('hidden'); playSuccessSound();
+    }
+
+    /* --- GAME 2 --- */
+    let g2Index = 0, g2Score = 0, g2Questions = [], currentG2Item = null, holdStartTime = 0, holdTimer = null, holdProgress = 0;
+    const REQUIRED_LONG_HOLD_MS = 1400;
+    function startGameMode2() {
+      g2Index = 0; g2Score = 0; g2Questions = [...VOWELS_POOL].sort(() => 0.5 - Math.random()).slice(0, 10);
+      showScreen('game2Screen'); loadG2Question();
+    }
+    function loadG2Question() {
+      if (g2Index >= g2Questions.length) { endGameMode2(); return; }
+      currentG2Item = g2Questions[g2Index];
+      document.getElementById('g2Progress').innerText = `${g2Index + 1} / ${g2Questions.length}`;
+      document.getElementById('g2Score').innerText = `${g2Score} ⭐`;
+      document.getElementById('m2VowelText').innerText = currentG2Item.char;
+      document.getElementById('m2SoundBadge').innerText = currentG2Item.name;
+      document.getElementById('m2HintText').innerText = currentG2Item.type === 'short' ? "⚡ (สระเสียงสั้น: คลิกปุ่มป้อนแล้วปล่อยทันที!)" : "⏳ (สระเสียงยาว: กดปุ่มป้อนค้างไว้จนหลอดเต็ม!)";
+      holdProgress = 0; document.getElementById('holdProgressBar').style.width = '0%'; document.getElementById('dragonMascot').style.transform = 'scale(1)';
+      speakThai(currentG2Item.name);
+    }
+    function speakCurrentVowelMode2() { if (currentG2Item) speakThai(currentG2Item.speech); }
+    function handleM2ButtonDown() {
+      holdStartTime = Date.now(); playTone(400, 0.05); document.getElementById('dragonMascot').style.transform = 'scale(1.15)';
+      clearInterval(holdTimer);
+      holdTimer = setInterval(() => {
+        holdProgress = Math.min(100, ((Date.now() - holdStartTime) / REQUIRED_LONG_HOLD_MS) * 100);
+        document.getElementById('holdProgressBar').style.width = `${holdProgress}%`;
+        if (holdProgress < 100) playTone(350 + (holdProgress * 4), 0.04);
+      }, 50);
+    }
+    function handleM2ButtonUp() {
+      if (!holdStartTime) return;
+      clearInterval(holdTimer); const holdDuration = Date.now() - holdStartTime; holdStartTime = 0;
+      document.getElementById('dragonMascot').style.transform = 'scale(1)';
+      evaluateM2Answer(holdDuration);
+    }
+    function evaluateM2Answer(duration) {
+      if (!currentG2Item) return;
+      let isCorrect = false;
+      if (currentG2Item.type === 'short') {
+        if (duration < 600) isCorrect = true; else showToast("นี่คือสระเสียงสั้น ต้องคลิกแล้วปล่อยไวๆ น้า", "⚡");
+      } else {
+        if (duration >= REQUIRED_LONG_HOLD_MS - 200) isCorrect = true; else showToast("นี่คือสระเสียงยาว ต้องกดเมาส์ค้างไว้นานกว่านี้จ้า", "⏳");
+      }
+      if (isCorrect) {
+        playSuccessSound(); g2Score++; showToast("เก่งมาก! เจ้ามังกรอิ่มแปล้เลย ✨", "🐉"); speakThai("ถูกต้องจ้า");
+      } else {
+        playErrorSound(); if (currentStudent) currentStudent.miss++; speakThai("ลองใหม่นะ");
+      }
+      g2Index++; setTimeout(loadG2Question, 900);
+    }
+    function endGameMode2() {
+      if (currentStudent) currentStudent.score2 = `${g2Score}/${g2Questions.length}`;
+      sendResearchData('game_completed', { game: 'mode2', score: g2Score, totalQuestions: g2Questions.length, mistakes: currentStudent?.miss || 0 });
+      updateTeacherStats();
+      document.getElementById('finalScoreDisplay').innerText = `${g2Score} / ${g2Questions.length} ⭐`;
+      document.getElementById('finalAccuracyDisplay').innerText = `ความแม่นยำ ${Math.round((g2Score / g2Questions.length) * 100)}% | ทดสอบทักษะการควบคุมระยะเวลาเมาส์`;
+      document.getElementById('victoryModal').classList.remove('hidden'); playSuccessSound();
+    }
+
+    /* --- DASHBOARD --- */
+    function openTeacherModal() { updateTeacherStats(); document.getElementById('teacherModal').classList.remove('hidden'); }
+    function closeTeacherModal() { document.getElementById('teacherModal').classList.add('hidden'); }
+    function openResearchModal() {
+      const status = document.getElementById('researchConnectionStatus');
+      status.innerText = RESEARCH_SHEET_WEB_APP_URL ? 'พร้อมส่งข้อมูลไปยัง Google Sheets' : 'ยังไม่ได้ตั้งค่า Google Sheets';
+      status.className = RESEARCH_SHEET_WEB_APP_URL
+        ? 'mt-4 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 text-sm font-semibold'
+        : 'mt-4 px-3 py-2 rounded-xl bg-amber-50 text-amber-800 text-sm font-semibold';
+      document.getElementById('researchModal').classList.remove('hidden');
+    }
+    function closeResearchModal() { document.getElementById('researchModal').classList.add('hidden'); }
+    function updateTeacherStats() {
+      document.getElementById('statAttendanceCount').innerText = `${STUDENTS.filter(s => s.attended).length} คน`;
+      let scoredStudents = STUDENTS.filter(s => s.score1 !== '-'), avgScore = 85.0;
+      if (scoredStudents.length > 0) {
+        let total = 0; scoredStudents.forEach(s => total += (parseInt(s.score1.split('/')[0]) / 10) * 100);
+        avgScore = (total / scoredStudents.length).toFixed(1);
+      }
+      document.getElementById('statE1Avg').innerText = `${avgScore}%`;
+      const tbody = document.getElementById('teacherTableBody'); tbody.innerHTML = '';
+      STUDENTS.forEach(stu => {
+        const tr = document.createElement('tr'); tr.className = stu.attended ? "bg-emerald-50/40" : "";
+        tr.innerHTML = `<td class="p-2.5 font-bold">${stu.num}</td><td class="p-2.5 flex items-center gap-1.5 font-medium text-slate-800"><span>${stu.avatar}</span><span>${stu.name}</span></td><td class="p-2.5">${stu.attended ? '<span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-semibold">มาเรียนแล้ว</span>' : '<span class="text-slate-400">ยังไม่เข้า</span>'}</td><td class="p-2.5 font-mono text-slate-500">${stu.time}</td><td class="p-2.5 font-bold text-amber-700">${stu.score1}</td><td class="p-2.5 font-bold text-sky-700">${stu.score2}</td><td class="p-2.5 text-rose-600 font-semibold">${stu.miss} ครั้ง</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    function resetDataForResearch() {
+      STUDENTS.forEach(s => { s.attended = false; s.time = "-"; s.score1 = "-"; s.score2 = "-"; s.miss = 0; });
+      currentStudent = null; updateUserBadge(); renderStudentGrid(); updateTeacherStats(); showToast("รีเซ็ตข้อมูลนักเรียนทั้งหมดเรียบร้อย", "🔄");
+    }
+    window.addEventListener('DOMContentLoaded', () => { renderStudentGrid(); updateTeacherStats(); });
+  </script>
+</body>
+</html>

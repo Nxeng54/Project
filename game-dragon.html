@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมป้อนอาหารมังกรน้อย | เกมหัตถ์ พิชิตสระ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .font-kid {
+      font-family: 'Mali', cursive;
+    }
+    .magic-cursor {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23f59e0b" stroke="%23ffffff" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'), auto;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-sky-100 via-teal-50 to-emerald-100 min-h-screen text-slate-800 magic-cursor overflow-x-hidden flex flex-col justify-between">
+
+  <!-- TOP HEADER -->
+  <header class="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-sky-200 px-4 py-3 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-sky-400 rounded-2xl flex items-center justify-center text-2xl shadow-md transform -rotate-3">
+          🐉⏱️
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold font-kid text-sky-900 tracking-wide flex items-center gap-2">
+            🎮 ป้อนอาหารมังกรน้อย
+            <span class="text-xs font-sans font-medium px-2 py-0.5 bg-sky-200 text-sky-800 rounded-full">ด่านที่ 2</span>
+          </h1>
+          <p class="text-xs text-slate-500">ฝึกการคลิกสั้น-กดยาว</p>
+        </div>
+      </div>
+
+      <div id="currentUserBadge" class="hidden items-center gap-2 bg-sky-50 border border-sky-300 px-3 py-1.5 rounded-full shadow-inner">
+        <span id="userAvatarIcon" class="text-xl">🦁</span>
+        <div class="text-left leading-tight pr-2">
+          <span id="userNameDisplay" class="text-sm font-bold text-sky-950 block">ด.ช. ภูผา</span>
+          <span class="text-[10px] text-emerald-600 font-semibold">⭐ เล่นเกม</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-5xl mx-auto w-full p-4 flex-1 flex flex-col justify-center items-center">
+    <div class="w-full max-w-4xl">
+      <!-- Top Control Bar -->
+      <div class="flex items-center justify-between bg-white/90 px-5 py-3 rounded-2xl shadow-md border border-slate-200 mb-4">
+        <button onclick="returnToHub()" class="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+          ⬅️ กลับหน้าเลือกเกม
+        </button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">ข้อที่</span>
+            <span id="g2Progress" class="text-lg font-bold text-slate-700 font-kid">1 / 10</span>
+          </div>
+          <div class="text-center">
+            <span class="text-xs text-slate-400 block font-medium">คะแนน</span>
+            <span id="g2Score" class="text-xl font-black text-sky-600 font-kid">0 ⭐</span>
+          </div>
+        </div>
+        <button onclick="speakCurrentVowelMode2()" title="ฟังเสียงสระ" class="bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
+          🔊 ฟังเสียง
+        </button>
+      </div>
+
+      <!-- Game Board -->
+      <div class="relative bg-gradient-to-b from-sky-100 via-teal-50 to-emerald-100 rounded-3xl p-6 border-4 border-white shadow-2xl min-h-[460px] flex flex-col justify-between items-center text-center">
+        
+        <!-- Question Box -->
+        <div class="bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-2xl shadow-sm max-w-md w-full">
+          <span class="text-xs font-bold text-slate-400 block">โจทย์สระคือ:</span>
+          <div class="flex items-center justify-center gap-3 mt-1">
+            <span id="m2VowelText" class="text-4xl sm:text-5xl font-bold font-kid text-slate-800">-า</span>
+            <span id="m2SoundBadge" class="bg-sky-100 text-sky-800 font-semibold text-sm px-3 py-1 rounded-full">สระ อา</span>
+          </div>
+          <p id="m2HintText" class="text-xs sm:text-sm text-indigo-600 font-medium mt-1">
+            (เป็นสระเสียงยาว ให้กดเมาส์ค้างไว้จนหลอดเต็ม!)
+          </p>
+        </div>
+
+        <!-- Dragon Mascot & Feed Button -->
+        <div class="my-4 flex flex-col items-center">
+          <div id="dragonMascot" class="text-7xl sm:text-8xl mb-2 transition-transform duration-200">🐉</div>
+          <div class="w-64 bg-slate-200 rounded-full h-5 p-0.5 shadow-inner mb-3 overflow-hidden border border-slate-300">
+            <div id="holdProgressBar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-full rounded-full transition-all duration-75 w-0"></div>
+          </div>
+          <button id="feedButton" 
+                  onmousedown="handleM2ButtonDown()" 
+                  onmouseup="handleM2ButtonUp()" 
+                  onmouseleave="handleM2ButtonUp()" 
+                  ontouchstart="handleM2ButtonDown()" 
+                  ontouchend="handleM2ButtonUp()"
+                  class="bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 active:scale-95 text-white font-black text-xl sm:text-2xl px-10 py-5 rounded-3xl shadow-xl border-4 border-white transition flex items-center gap-3">
+            <span>ป้อนอาหาร</span>
+            <span>🍖</span>
+          </button>
+          <span class="text-xs text-slate-500 mt-2 font-medium">กดเมาส์สั้นหรือค้างตามความยาวของเสียงสระ</span>
+        </div>
+
+        <!-- Instructions -->
+        <div class="grid grid-cols-2 gap-4 text-left w-full max-w-md text-[11px] sm:text-xs text-slate-600 bg-white/60 p-2.5 rounded-xl">
+          <div>⚡ <b>สระเสียงสั้น:</b> คลิกแล้วปล่อยทันที</div>
+          <div>⏳ <b>สระเสียงยาว:</b> กดคลิกค้างไว้ 1.5 วินาที</div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="w-full text-center py-2 text-xs text-slate-500">
+    โครงงานวิจัยการพัฒนาผลสัมฤทธิ์ภาษาไทย ด่านที่ 2: ป้อนอาหารมังกร
+  </footer>
+
+  <!-- Victory Modal -->
+  <div id="victoryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-4 border-yellow-300">
+      <div class="text-6xl mb-2">🏆🎉</div>
+      <h3 class="text-3xl font-black font-kid text-sky-900">เก่งมากเลยจ้า!</h3>
+      <p class="text-slate-600 text-sm mt-1">หนูพิชิตมังกรน้อยสำเร็จแล้ว</p>
+      <div class="my-6 bg-gradient-to-r from-sky-50 to-indigo-50 p-4 rounded-2xl border border-sky-200">
+        <span class="text-xs text-slate-500 block">คะแนนที่ได้</span>
+        <span id="finalScoreDisplay" class="text-4xl font-black text-sky-600 font-kid">10 / 10 ⭐</span>
+        <div class="mt-2 text-xs text-emerald-600 font-semibold" id="finalAccuracyDisplay">ความแม่นยำ 100% | ทดสอบทักษะการควบคุมระยะเวลา</div>
+      </div>
+      <button onclick="finishAllGames()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg text-lg">
+        เสร็จสิ้นภารกิจ! กลับหน้าหลัก 🎊
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2">
+    <span id="toastIcon">💡</span>
+    <span id="toastMessage">แจ้งเตือนข้อความ</span>
+  </div>
+
+  <script src="shared-utils.js"></script>
+  <script>
+    let g2Index = 0, g2Score = 0, g2Questions = [], currentG2Item = null, holdStartTime = 0, holdTimer = null, holdProgress = 0;
+    const REQUIRED_LONG_HOLD_MS = 1400;
+
+    // Load current student from storage
+    window.addEventListener('load', () => {
+      getStudentFromStorage();
+      if (currentStudent) {
+        document.getElementById('userAvatarIcon').innerText = currentStudent.avatar;
+        document.getElementById('userNameDisplay').innerText = currentStudent.name;
+        document.getElementById('currentUserBadge').classList.remove('hidden');
+        document.getElementById('currentUserBadge').classList.add('flex');
+        startGameMode2();
+      } else {
+        showToast('กรุณาเข้าสู่ระบบก่อน', '⚠️');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      }
+    });
+
+    function startGameMode2() {
+      g2Index = 0;
+      g2Score = 0;
+      g2Questions = [...VOWELS_POOL].sort(() => 0.5 - Math.random()).slice(0, 10);
+      loadG2Question();
+    }
+
+    function loadG2Question() {
+      if (g2Index >= g2Questions.length) {
+        endGameMode2();
+        return;
+      }
+      currentG2Item = g2Questions[g2Index];
+      document.getElementById('g2Progress').innerText = `${g2Index + 1} / ${g2Questions.length}`;
+      document.getElementById('g2Score').innerText = `${g2Score} ⭐`;
+      document.getElementById('m2VowelText').innerText = currentG2Item.char;
+      document.getElementById('m2SoundBadge').innerText = currentG2Item.name;
+      document.getElementById('m2HintText').innerText = currentG2Item.type === 'short' ? "⚡ (สระเสียงสั้น: คลิกปุ่มป้อนแล้วปล่อยทันที!)" : "⏳ (สระเสียงยาว: กดปุ่มป้อนค้างไว้จนหลอดเต็ม!)";
+      holdProgress = 0;
+      document.getElementById('holdProgressBar').style.width = '0%';
+      document.getElementById('dragonMascot').style.transform = 'scale(1)';
+      speakThai(currentG2Item.name);
+    }
+
+    function speakCurrentVowelMode2() {
+      if (currentG2Item) speakThai(currentG2Item.speech);
+    }
+
+    function handleM2ButtonDown() {
+      holdStartTime = Date.now();
+      playTone(400, 0.05);
+      document.getElementById('dragonMascot').style.transform = 'scale(1.15)';
+      clearInterval(holdTimer);
+      holdTimer = setInterval(() => {
+        holdProgress = Math.min(100, ((Date.now() - holdStartTime) / REQUIRED_LONG_HOLD_MS) * 100);
+        document.getElementById('holdProgressBar').style.width = `${holdProgress}%`;
+        if (holdProgress < 100) playTone(350 + (holdProgress * 4), 0.04);
+      }, 50);
+    }
+
+    function handleM2ButtonUp() {
+      if (!holdStartTime) return;
+      clearInterval(holdTimer);
+      const holdDuration = Date.now() - holdStartTime;
+      holdStartTime = 0;
+      document.getElementById('dragonMascot').style.transform = 'scale(1)';
+      evaluateM2Answer(holdDuration);
+    }
+
+    function evaluateM2Answer(duration) {
+      if (!currentG2Item) return;
+      let isCorrect = false;
+      if (currentG2Item.type === 'short') {
+        if (duration < 600) {
+          isCorrect = true;
+        } else {
+          showToast("นี่คือสระเสียงสั้น ต้องคลิกแล้วปล่อยไวๆ น้า", "⚡");
+        }
+      } else {
+        if (duration >= REQUIRED_LONG_HOLD_MS - 200) {
+          isCorrect = true;
+        } else {
+          showToast("นี่คือสระเสียงยาว ต้องกดเมาส์ค้างไว้นานกว่านี้จ้า", "⏳");
+        }
+      }
+      if (isCorrect) {
+        playSuccessSound();
+        g2Score++;
+        showToast("เก่งมาก! เจ้ามังกรอิ่มแปล้เลย ✨", "🐉");
+        speakThai("ถูกต้องจ้า");
+      } else {
+        playErrorSound();
+        if (currentStudent) currentStudent.miss = (currentStudent.miss || 0) + 1;
+        speakThai("ลองใหม่นะ");
+      }
+      g2Index++;
+      setTimeout(loadG2Question, 900);
+    }
+
+    function endGameMode2() {
+      if (currentStudent) currentStudent.score2 = `${g2Score}/${g2Questions.length}`;
+      sendResearchData('game_completed', { game: 'mode2', score: g2Score, totalQuestions: g2Questions.length, mistakes: currentStudent?.miss || 0 });
+      
+      document.getElementById('finalScoreDisplay').innerText = `${g2Score} / ${g2Questions.length} ⭐`;
+      document.getElementById('finalAccuracyDisplay').innerText = `ความแม่นยำ ${Math.round((g2Score / g2Questions.length) * 100)}% | ทดสอบทักษะการควบคุมระยะเวลา`;
+      document.getElementById('victoryModal').classList.remove('hidden');
+      playSuccessSound();
+    }
+
+    function returnToHub() {
+      window.location.href = 'index.html';
+    }
+
+    function finishAllGames() {
+      if (currentStudent) {
+        saveStudentToStorage(currentStudent);
+      }
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

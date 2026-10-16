@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หน้าเรียนสระเสียงยาว | เกมหัตถ์ พิชิตสระ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .font-kid {
+      font-family: 'Mali', cursive;
+    }
+    .magic-cursor {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23f59e0b" stroke="%23ffffff" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'), auto;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-100 via-teal-50 to-green-100 min-h-screen text-slate-800 magic-cursor overflow-x-hidden flex flex-col justify-between">
+
+  <!-- TOP HEADER -->
+  <header class="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-200 px-4 py-3 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-emerald-400 rounded-2xl flex items-center justify-center text-2xl shadow-md transform -rotate-3">
+          🌈
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold font-kid text-emerald-900 tracking-wide flex items-center gap-2">
+            📚 สระเสียงยาว
+            <span class="text-xs font-sans font-medium px-2 py-0.5 bg-emerald-200 text-emerald-800 rounded-full">หน้าที่ 2</span>
+          </h1>
+          <p class="text-xs text-slate-500">เรียนรู้และฟังเสียงสระเสียงยาวทั้งหมด</p>
+        </div>
+      </div>
+
+      <div id="currentUserBadge" class="hidden items-center gap-2 bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-full shadow-inner">
+        <span id="userAvatarIcon" class="text-xl">🦁</span>
+        <div class="text-left leading-tight pr-2">
+          <span id="userNameDisplay" class="text-sm font-bold text-emerald-950 block">ด.ช. ภูผา</span>
+          <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block"></span> เช็คชื่อแล้ว ⭐
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-5xl mx-auto w-full p-4 flex-1 flex flex-col justify-center items-center">
+    <div class="w-full max-w-4xl">
+      <!-- Back Button & Navigation -->
+      <div class="flex items-center justify-between bg-white/90 px-5 py-3 rounded-2xl shadow-md border border-slate-200 mb-6">
+        <button onclick="goBack()" class="text-sm font-semibold text-slate-600 hover:text-slate-800 flex items-center gap-1">
+          ⬅️ กลับหน้าหลัก
+        </button>
+        <span class="text-xs text-slate-500 font-medium">🌈 สระเสียงยาว</span>
+        <button onclick="speakAllLongVowels()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs px-3 py-1.5 rounded-xl font-medium">
+          🔊 ฟังทั้งหมด
+        </button>
+      </div>
+
+      <!-- Content Card -->
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-emerald-200">
+        
+        <!-- Header -->
+        <div class="text-center mb-6">
+          <h2 class="text-3xl sm:text-4xl font-black font-kid text-slate-800">
+            🎒 มาทำความรู้จัก "สระเสียงยาว" กันเถอะ!
+          </h2>
+          <p class="text-slate-600 text-sm mt-2">คลิกที่การ์ดสระแต่ละตัวเพื่อฟังเสียงอ่านออกเสียงภาษาไทย</p>
+        </div>
+
+        <!-- Explanation Box -->
+        <div class="bg-emerald-50/90 rounded-3xl p-6 border-3 border-emerald-300 mb-8">
+          <div class="flex items-start gap-4">
+            <div class="text-4xl flex-shrink-0">🌈</div>
+            <div>
+              <h3 class="text-xl font-bold font-kid text-emerald-800 mb-2">สระเสียงยาว คืออะไร?</h3>
+              <p class="text-base sm:text-lg text-emerald-700 font-medium leading-relaxed">
+                <b>สระเสียงยาว</b> คือ สระที่ลากเสียงให้อย่างต่อเนื่องยาวนานขึ้น เช่น อา, อี, อือ, อู, เอ, แอ, โอ, ออ, เออ
+              </p>
+              <div class="bg-white/80 p-3 rounded-2xl mt-3 text-sm text-emerald-900">
+                <b>💡 เทคนิคเวลาเล่นเกม:</b> <span class="font-bold text-emerald-700">"กดเมาส์ค้างไว้ตามจังหวะเสียง"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vowel Cards Grid -->
+        <div class="mb-8">
+          <h4 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+            <span class="text-2xl">👇</span> ทดลองฟังเสียงสระเสียงยาวแต่ละตัว
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <!-- Vowel -า -->
+            <button onclick="playVowelSound('-า', 'สระ อา', 'สระ อา สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">-า</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ อา</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+
+            <!-- Vowel -ี -->
+            <button onclick="playVowelSound('-ี', 'สระ อี', 'สระ อี สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">-ี</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ อี</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+
+            <!-- Vowel -ื -->
+            <button onclick="playVowelSound('-ื', 'สระ อือ', 'สระ อือ สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">-ื</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ อือ</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+
+            <!-- Vowel -ู -->
+            <button onclick="playVowelSound('-ู', 'สระ อู', 'สระ อู สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">-ู</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ อู</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+
+            <!-- Vowel เ- -->
+            <button onclick="playVowelSound('เ-', 'สระ เอ', 'สระ เอ สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">เ-</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ เอ</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+
+            <!-- Vowel โ- -->
+            <button onclick="playVowelSound('โ-', 'สระ โอ', 'สระ โอ สระเสียงยาว')" class="group bg-gradient-to-br from-emerald-100 to-teal-100 hover:from-emerald-200 hover:to-teal-200 p-4 rounded-2xl border-3 border-emerald-300 shadow-md hover:shadow-lg transition text-center">
+              <span class="text-4xl font-bold font-kid text-emerald-700 block mb-2">โ-</span>
+              <span class="text-sm font-semibold text-emerald-600">สระ โอ</span>
+              <span class="text-2xl mt-2 block opacity-0 group-hover:opacity-100 transition">🔊</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="border-t border-emerald-200 pt-6 text-center">
+          <p class="text-slate-600 font-semibold mb-4">เรียนรู้สระทั้งสั้นและยาวแล้วใช่ไหมจ๊ะ? ไปเล่นเกมกันเลย!</p>
+          <a href="game-basket.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-lg py-4 px-8 rounded-2xl shadow-xl transition transform hover:scale-105">
+            <span>ไปเล่นเกมตะกร้าแยกสระ</span>
+            <span>🧺</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="w-full text-center py-2 text-xs text-slate-500">
+    โครงงานวิจัยการพัฒนาผลสัมฤทธิ์ภาษาไทย เรื่อง สระเสียงสั้น-ยาว ป.1
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2">
+    <span id="toastIcon">💡</span>
+    <span id="toastMessage">แจ้งเตือนข้อความ</span>
+  </div>
+
+  <script src="shared-utils.js"></script>
+  <script>
+    // Load current student from storage
+    window.addEventListener('load', () => {
+      getStudentFromStorage();
+      if (currentStudent) {
+        document.getElementById('userAvatarIcon').innerText = currentStudent.avatar;
+        document.getElementById('userNameDisplay').innerText = currentStudent.name;
+        document.getElementById('currentUserBadge').classList.remove('hidden');
+        document.getElementById('currentUserBadge').classList.add('flex');
+      }
+    });
+
+    function playVowelSound(char, name, speech) {
+      speakThai(speech);
+      playTone(659.25, 0.1);
+      showToast(`ฟัง ${name}`, '🔊');
+      sendResearchData('vowel_sound_played', { vowel: char, type: 'long' });
+    }
+
+    function speakAllLongVowels() {
+      const longVowels = [
+        'สระ อา สระเสียงยาว',
+        'สระ อี สระเสียงยาว',
+        'สระ อือ สระเสียงยาว',
+        'สระ อู สระเสียงยาว',
+        'สระ เอ สระเสียงยาว',
+        'สระ โอ สระเสียงยาว'
+      ];
+      speakThai(longVowels.join(' '));
+      showToast('ฟังเสียงสระเสียงยาวทั้งหมด', '🔊');
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
